@@ -1,0 +1,22 @@
+{
+  "name": "wolfdog-generator",
+  "version": "1.0.0",
+  "description": "Almost-zero-dependency static site generator",
+  "license": "Unlicense",
+  "author": "Ish <ish@ish.works>",
+  "type": "module",
+  "scripts": {
+    "start": "node --no-warnings=ExpreimentalWarning src/index.ts"
+  },
+  "devDependencies": {
+    "@types/mustache": "^4.2.6",
+    "prettier": "^3.6.2",
+    "typescript": "^5.8.3"
+  },
+  "dependencies": {
+    "docopt": "^0.6.2",
+    "luxon": "^3.7.1",
+    "mustache": "^4.2.0",
+    "zod": "^4.0.14"
+  }
+}

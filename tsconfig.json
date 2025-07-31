@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "noEmit": true,
+    "moduleResolution": "nodenext",
+    "module": "nodenext",
+    "target": "esnext",
+    "verbatimModuleSyntax": true,
+    "rewriteRelativeImportExtensions": true
+  }
+}
