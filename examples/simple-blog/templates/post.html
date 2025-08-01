@@ -1,0 +1,20 @@
+<INCLUDE-PARTIAL name="main-template.html">
+  <title>
+    <ARG name="post.title" /> - <ARG name="additionalValues.blogName" />
+  </title>
+  <body>
+    <article>
+      <hgroup>
+        <h1><ARG name="post.title" /></h1>
+      </hgroup>
+      <IF>
+        <CONDITION-ARG>post.showPubDate</CONDITION-ARG>
+        <THEN>
+          <div class="date"><ARG name="post.pubDate" /></div>
+        </THEN>
+      </IF>
+
+      <ARG name="post.content" isHtml="true" />
+    </article>
+  </body>
+</INCLUDE-PARTIAL>

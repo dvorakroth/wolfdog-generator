@@ -1,0 +1,21 @@
+<INCLUDE-PARTIAL name="main-template.html">
+  <title><ARG name="additionalValues.blogName" /></title>
+  <body>
+    <h1><ARG name="additionalValues.blogName" /></h1>
+    <h2>Latest posts</h2>
+
+    <ul class="post-list">
+      <FOR item="post" in="allPosts">
+        <li>
+          <a href="$$ARG$$item.fullLink$$">
+            <ARG name="post.title" />
+          </a>
+          <IF>
+            <CONDITION-ARG>post.showPubDate</CONDITION-ARG>
+            <THEN> — <ARG name="post.pubDate" /></THEN>
+          </IF>
+        </li>
+      </FOR>
+    </ul>
+  </body>
+</INCLUDE-PARTIAL>
