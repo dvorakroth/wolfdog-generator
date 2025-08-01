@@ -1,0 +1,28 @@
+/* this isn't the absolute best design in the world, but it's just an example */
+
+body {
+  font-family: sans-serif;
+  background: black;
+  color: white;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: serif;
+}
+
+a:link,
+a:visited {
+  color: lightgrey;
+  text-decoration: dotted;
+}
+
+a:hover,
+a:active {
+  color: white;
+  text-decoration: dashed;
+}

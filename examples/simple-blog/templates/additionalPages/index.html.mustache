@@ -1,0 +1,19 @@
+{{<main-template.html}}
+  {{$title}}{{additionalValues.blogName}}{{/title}}
+  {{$body}}
+    <h1>{{additionalValues.blogName}}</h1>
+    <h2>Latest posts</h2>
+    <ul class="post-list">
+      {{#allPosts}}
+        <li>
+          <a href="/posts/{{slug}}">
+            {{title}}
+          </a>
+          {{#showPubDate}}
+            — {{pubDate}}
+          {{/showPubDate}}
+        </li>
+      {{/allPosts}}
+    </ul>
+  {{/body}}
+{{/main-template.html}}

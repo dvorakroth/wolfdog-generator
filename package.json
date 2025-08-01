@@ -6,10 +6,13 @@
   "author": "Ish <ish@ish.works>",
   "type": "module",
   "scripts": {
-    "start": "node --no-warnings=ExpreimentalWarning src/index.ts"
+    "start": "node src/index.ts"
   },
   "devDependencies": {
+    "@types/docopt": "^0.6.37",
+    "@types/luxon": "^3.7.1",
     "@types/mustache": "^4.2.6",
+    "@types/node": "^24.1.0",
     "prettier": "^3.6.2",
     "typescript": "^5.8.3"
   },
