@@ -1,6 +1,6 @@
-{{<main-template.html}}
-  {{$title}}{{post.title}} - {{additionalValues.blogName}}{{/title}}
-  {{$body}}
+{{#> main-template.html.hbs}}
+  {{#*inline "title"}}{{post.title}} - {{additionalValues.blogName}}{{/inline}}
+  {{#*inline "body"}}
     <article>
       <hgroup>
         <h1>{{post.title}}</h1>
@@ -9,7 +9,8 @@
         {{/post.showPubDate}}
       </hgroup>
 
-      {{{post.content}}}
+{{{post.content}}}
+
     </article>
-  {{/body}}
-{{/main-template.html}}
+  {{/inline}}
+{{/main-template.html.hbs}}

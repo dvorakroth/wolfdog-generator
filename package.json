@@ -11,15 +11,14 @@
   "devDependencies": {
     "@types/docopt": "^0.6.37",
     "@types/luxon": "^3.7.1",
-    "@types/mustache": "^4.2.6",
     "@types/node": "^24.1.0",
     "prettier": "^3.6.2",
     "typescript": "^5.8.3"
   },
   "dependencies": {
     "docopt": "^0.6.2",
+    "handlebars": "^4.7.8",
     "luxon": "^3.7.1",
-    "mustache": "^4.2.0",
     "zod": "^4.0.14"
   }
 }

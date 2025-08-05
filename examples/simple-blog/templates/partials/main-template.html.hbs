@@ -3,11 +3,12 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="generator" content="{{generatorTag}}" />
     <link rel="stylesheet" href="/simple-blog.css" />
-    {{$morehead}}{{/morehead}}
-    <title>{{$title}}{{/title}}</title>
+    {{#> morehead}}{{/morehead}}
+    <title>{{> title}}</title>
   </head>
   <body>
-    {{$body}}{{/body}}
+    {{> body}}
   </body>
 </html>

@@ -11,9 +11,9 @@ Not counting dev-dependencies, this project currently has 3 dependencies:
 - [docopt](https://www.npmjs.com/package/docopt) -- for argument parsing (0 dependencies)
 - [luxon](https://www.npmjs.com/package/luxon) -- for date stuff (0 dependencies)
 - [zod](https://www.npmjs.com/package/zod) -- for type validation (0 dependencies)
-- [mustache](https://www.npmjs.com/package/mustache) -- for templates (0 dependencies)
+- [handlebars](https://www.npmjs.com/package/handlebars) -- for templating (5 dependencies, that all have 0 dependencies)
 
-These packages have pretty important functionality that would be a headache to implement myself, and more importantly, all have 0 dependencies of their own, minimizing potential for future NPM headaches.
+These packages have pretty important functionality that would be a headache to implement myself, and more importantly, all except one of them have 0 dependencies of their own, minimizing potential for future NPM headaches.
 
 ## How to Use
 

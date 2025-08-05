@@ -5,9 +5,11 @@ export const schemaSiteManifest = z.strictObject({
   version: z.string(),
   outputDir: z.string().default("dist"),
   postInputDir: z.string().default("posts"),
+  postOutputFileTemplate: z.string().default("posts/{{post.slug}}/index.html"),
   staticAssetsInputDir: z.string().default("static"),
-  postTemplate: z.string().default("templates/post.html.mustache"),
-  additionalPageTemplates: z.string().default("templates/additionalPages/"),
+  postTemplate: z.string().default("templates/post.html.hbs"),
+  partialTemplatesDir: z.string().default("templates/partials/"),
+  additionalPageTemplatesDir: z.string().default("templates/additionalPages/"),
   additionalValuesInTemplateScope: z.json().optional(),
 });
 
@@ -25,7 +27,7 @@ export const schemaPostMetadata = z.strictObject({
     .transform((str) => DateTime.fromISO(str, { setZone: true }))
     .pipe(schemaValidDateTime),
   showPubDate: z.union([z.string(), z.literal(false)]),
-  additionalVariablesInScope: z.json().optional(),
+  additionalValuesInTemplateScope: z.json().optional(),
 });
 
 export type PostMetadata = z.infer<typeof schemaPostMetadata>;

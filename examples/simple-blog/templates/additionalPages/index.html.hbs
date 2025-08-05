@@ -1,6 +1,6 @@
-{{<main-template.html}}
-  {{$title}}{{additionalValues.blogName}}{{/title}}
-  {{$body}}
+{{#> main-template.html.hbs}}
+  {{#*inline "title"}}{{additionalValues.blogName}}{{/inline}}
+  {{#*inline "body"}}
     <h1>{{additionalValues.blogName}}</h1>
     <h2>Latest posts</h2>
     <ul class="post-list">
@@ -15,5 +15,5 @@
         </li>
       {{/allPosts}}
     </ul>
-  {{/body}}
-{{/main-template.html}}
+  {{/inline}}
+{{/main-template.html.hbs}}
