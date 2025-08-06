@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>{{additionalValues.blogName}}</title>
+    <description>{{additionalValues.blogDescription}}</description>
+    <link>{{additionalValues.blogUrl}}</link>
+    {{#allPosts}}
+    <item>
+      <title>{{title}}</title>
+      <link>{{../additionalValues.blogUrl}}posts/{{slug}}</link>
+      <guid isPermaLink="true">{{../additionalValues.blogUrl}}posts/{{slug}}</guid>
+      <description>
+        {{~#if additionalValuesPost.description~}}
+          {{additionalValuesPost.description}}
+        {{~else~}}
+          {{title}}
+        {{~/if~}}
+      </description>
+      <pubDate>{{pubDateRfc}}</pubDate>
+    </item>
+    {{/allPosts}}
+  </channel>
+</rss>

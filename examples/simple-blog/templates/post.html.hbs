@@ -1,9 +1,10 @@
 {{#> main-template.html.hbs}}
   {{#*inline "title"}}{{post.title}} - {{additionalValues.blogName}}{{/inline}}
   {{#*inline "body"}}
+    <a href="/">&lt; Back to main page</a>
     <article>
       <hgroup>
-        <h1>{{post.title}}</h1>
+        <h2>{{post.title}}</h2>
         {{#post.showPubDate}}
           <div class="date">{{post.pubDate}}</div>
         {{/post.showPubDate}}

@@ -1,0 +1,8 @@
+{
+  "title": "The Woes of Static Site Generation",
+  "pubDate": "2025-08-06T21:27:00.000+02:00",
+  "showPubDate": "August 5th, 2025",
+  "additionalValuesInTemplateScope": {
+    "description": "Some thoughts on static site generation and its unfortunately many pitfalls"
+  }
+}

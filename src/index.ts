@@ -12,12 +12,13 @@ import {
 
 const USAGE = `
 Usage:
-  wolfdog <path/to/wolfdog.json>
+  wolfdog build <path/to/site/directory>
   wolfdog -h | --help | --version
 `;
 
 const schemaOpts = z.object({
-  "<path/to/wolfdog.json>": z.string(),
+  "<path/to/site/directory>": z.string(),
+  build: z.boolean(),
 });
 
 const LOGGER = {
@@ -26,11 +27,11 @@ const LOGGER = {
 };
 
 async function main(): Promise<void> {
-  const { "<path/to/wolfdog.json>": pathToManifest } = schemaOpts.parse(
+  const { "<path/to/site/directory>": manifestDir } = schemaOpts.parse(
     docopt(USAGE, { version: VERSION }),
   );
 
-  const manifestDir = path.dirname(pathToManifest);
+  const pathToManifest = path.join(manifestDir, "wolfdog.json");
   LOGGER.info(`Compiling website at: ${manifestDir}`);
   LOGGER.info("");
 
@@ -44,8 +45,8 @@ async function main(): Promise<void> {
 
   // TODO add some more sanity checks: is the output directory different from any of the input directories?
 
-  LOGGER.info("📂 Creating output directory (if necessary)");
   const outDir = path.join(manifestDir, manifest.outputDir);
+  LOGGER.info("📂 Creating output directory: " + outDir);
   await fs.mkdir(outDir, { recursive: true });
 
   LOGGER.info("📂 Copying static files");
@@ -87,7 +88,7 @@ async function main(): Promise<void> {
   );
 
   LOGGER.info("");
-  LOGGER.info("All done! 🐺");
+  LOGGER.info("✅ All done! 🐺");
 }
 
 const VERSION = await (async (): Promise<string> => {

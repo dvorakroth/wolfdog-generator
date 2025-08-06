@@ -1,6 +1,8 @@
 {
   "version": "1.0.0",
   "additionalValuesInTemplateScope": {
-    "blogName": "Wolfdog Blog"
+    "blogName": "Wolfdog Blog",
+    "blogDescription": "A simple example blog by a simple example wolfdog",
+    "blogUrl": "https://wolfdog.example.com/"
   }
 }

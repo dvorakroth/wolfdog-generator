@@ -18,11 +18,11 @@ h6 {
 a:link,
 a:visited {
   color: lightgrey;
-  text-decoration: dotted;
+  text-decoration: underline dotted;
 }
 
 a:hover,
 a:active {
   color: white;
-  text-decoration: dashed;
+  text-decoration: underline dashed;
 }

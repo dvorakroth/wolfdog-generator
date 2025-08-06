@@ -5,10 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="generator" content="{{generatorTag}}" />
     <link rel="stylesheet" href="/simple-blog.css" />
+    <link rel="alternate" type="application/rss+xml" title="RSS Feed for {{additionalValues.blogName}}" href="/rss.xml">
     {{#> morehead}}{{/morehead}}
     <title>{{> title}}</title>
   </head>
   <body>
+    <h1>{{additionalValues.blogName}}</h1>
     {{> body}}
+    <footer>
+      <small>Built with <a href="https://github.com/dvorakroth/wolfdog-generator">Wolfdog Generator</a></small>
+    </footer>
   </body>
 </html>
