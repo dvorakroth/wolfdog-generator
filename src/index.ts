@@ -51,7 +51,20 @@ async function main(): Promise<void> {
 
   LOGGER.info("📂 Copying static files");
   const staticDir = path.join(manifestDir, manifest.staticAssetsInputDir);
-  await fs.cp(staticDir, outDir, { recursive: true });
+  try {
+    await fs.cp(staticDir, outDir, { recursive: true });
+  } catch (err) {
+    if (
+      err &&
+      typeof err === "object" &&
+      "code" in err &&
+      err.code === "ENOENT"
+    ) {
+      LOGGER.info("📂 (Nevermind, no static files found)");
+    } else {
+      throw err;
+    }
+  }
 
   LOGGER.info("📝 Reading all posts");
   const postDir = path.join(manifestDir, manifest.postInputDir);
@@ -61,9 +74,12 @@ async function main(): Promise<void> {
   }
 
   LOGGER.info("📐 Reading partial templates");
-  await readPartialTemplates(
+  const partialTemplatesFound = await readPartialTemplates(
     path.join(manifestDir, manifest.partialTemplatesDir),
   );
+  if (!partialTemplatesFound) {
+    LOGGER.info("📐 (Nevermind, no partial templates found)");
+  }
 
   LOGGER.info("📝 Templating and writing all posts");
   const postTemplateFilePath = path.join(manifestDir, manifest.postTemplate);
@@ -80,12 +96,15 @@ async function main(): Promise<void> {
     manifestDir,
     manifest.additionalPageTemplatesDir,
   );
-  await templateAndWriteAdditionalPages(
+  const additionalPagesFound = await templateAndWriteAdditionalPages(
     additionalPagesPath,
     allPosts,
     manifest.additionalValuesInTemplateScope,
     outDir,
   );
+  if (!additionalPagesFound) {
+    LOGGER.info("📝 (Nevermind, no additional pages found)");
+  }
 
   LOGGER.info("");
   LOGGER.info("✅ All done! 🐺");
@@ -226,15 +245,34 @@ async function readAllPosts(postDir: string): Promise<false | SitePost[]> {
 
 async function readPartialTemplates(
   partialTemplatesDir: string,
-): Promise<void> {
-  const allPartialFiles = await fs.readdir(partialTemplatesDir);
+): Promise<boolean> {
+  let allPartialFiles;
+  try {
+    allPartialFiles = await fs.readdir(partialTemplatesDir);
+  } catch (err) {
+    if (
+      err &&
+      typeof err === "object" &&
+      "code" in err &&
+      err.code === "ENOENT"
+    ) {
+      return false;
+    } else {
+      throw err;
+    }
+  }
+
+  let foundAny = false;
 
   for (const partialFile of allPartialFiles) {
     Handlebars.registerPartial(
       partialFile,
       await fs.readFile(path.join(partialTemplatesDir, partialFile), "utf-8"),
     );
+    foundAny = true;
   }
+
+  return foundAny;
 }
 
 async function formatPostForTemplateScope(
@@ -296,7 +334,22 @@ async function templateAndWriteAdditionalPages(
   allPosts: SitePost[],
   additionalValuesInTemplateScope: z.core.util.JSONType | undefined,
   outDir: string,
-): Promise<void> {
+): Promise<boolean> {
+  try {
+    await fs.stat(additionalPagesDir);
+  } catch (err) {
+    if (
+      err &&
+      typeof err === "object" &&
+      "code" in err &&
+      err.code === "ENOENT"
+    ) {
+      return false;
+    } else {
+      throw err;
+    }
+  }
+
   const allPostsForScope = await Promise.all(
     allPosts.map(formatPostForTemplateScope),
   );
@@ -305,6 +358,8 @@ async function templateAndWriteAdditionalPages(
   const queue: AdditionalPageQueueItem[] = [
     { inputFilePath: additionalPagesDir, outputFilePath: outDir },
   ];
+
+  let foundAny = false;
 
   while (queue.length) {
     const { inputFilePath, outputFilePath } = queue.pop()!;
@@ -338,12 +393,15 @@ async function templateAndWriteAdditionalPages(
             generatorTag: GENERATOR_TAG,
           }),
         );
+        foundAny = true;
       } catch (err) {
         LOGGER.error(`❌ Error processing page: ${inputFilePath}`);
         throw err;
       }
     }
   }
+
+  return foundAny;
 }
 
 await main();
