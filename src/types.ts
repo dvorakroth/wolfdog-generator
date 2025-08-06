@@ -21,12 +21,36 @@ const schemaValidDateTime = z.custom<DateTime<true>>(
 );
 
 export const schemaPostMetadata = z.strictObject({
+  /**
+   * A mandatory title for the post
+   */
   title: z.string(),
+
+  /**
+   * A mandatory publication date for the post. (For sorting and RSS and stuff)
+   *
+   * Given in ISO format + timezone
+   *
+   * @example "2025-08-06T04:20:00.690Z"
+   */
   pubDate: z.iso
     .datetime({ offset: true })
     .transform((str) => DateTime.fromISO(str, { setZone: true }))
     .pipe(schemaValidDateTime),
+
+  /**
+   * Publication date for display purposes. Can be any string, or `false`
+   *
+   * @example "August 6th, 2025"
+   * @example false
+   * @example "Back when I lived in Sawtooth"
+   */
   showPubDate: z.union([z.string(), z.literal(false)]),
+
+  /**
+   * Optionally, values to be passed onto the Handlebars template, in a prop
+   * named `additionalValues`
+   */
   additionalValuesInTemplateScope: z.json().optional(),
 });
 
