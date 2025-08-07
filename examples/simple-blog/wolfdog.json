@@ -1,4 +1,5 @@
 {
+  "$schema": "../../wolfdog.schema.json",
   "version": "1.0.0",
   "additionalValuesInTemplateScope": {
     "blogName": "Wolfdog Blog",

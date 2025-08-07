@@ -5,13 +5,10 @@
     <article>
       <hgroup>
         <h2>{{post.title}}</h2>
-        {{#post.showPubDate}}
-          <div class="date">{{post.pubDate}}</div>
-        {{/post.showPubDate}}
+        <div class="date">{{post.pubDate}}</div>
       </hgroup>
 
-{{{post.content}}}
-
+      {{> post-content.html.hbs post.content}}
     </article>
   {{/inline}}
 {{/main-template.html.hbs}}

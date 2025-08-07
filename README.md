@@ -1,6 +1,6 @@
 # wolfdog-generator
 
-Static site generator with as few dependencies as I could realistically manage without going insane.
+Simple static site generator with as few dependencies as I could realistically manage without going insane.
 
 ## How to Use
 
@@ -25,9 +25,19 @@ my-cool-site/
 
 And run `wolfdog build path/to/my-cool-site`
 
+Be sure to have a look at the [examples](examples/)!
+
 ## wolfdog.json
 
 TODO write about this
+
+## Additional Pages
+
+TODO
+
+## Partial Templates
+
+TODO
 
 ## Posts
 
@@ -52,23 +62,12 @@ type PostMetadata = {
   pubDate: string;
 
   /**
-   * Publication date for display purposes. Can be any string, or `false`
-   *
-   * @example "August 6th, 2025"
-   * @example false
-   * @example "Back when I lived in Sawtooth"
-   */
-  showPubDate: string | false;
-
-  /**
    * Optionally, values to be passed onto the Handlebars template, in a prop
-   * named `additionalValues`
+   * named `post.additionalValues`
    */
   additionalValuesInTemplateScope?: z.core.util.JSONType;
 };
 ```
-
-I should probably create a JSON schema, but I haven't yet, so uh, yeah.
 
 The post template (by default `templates/post.html.hbs`) receives a scope that looks something like this:
 
@@ -77,8 +76,7 @@ const SCOPE = {
   post: {
     slug: "on-regression-and-overthinking",
     title: "On Regression and Overthinking",
-    showPubDate: true,
-    pubDate: "Back when I lived in Sawtooth",
+    pubDate: "Januray 20, 2020",
     pubDateIso: "2020-01-20T00:00:00-07:00",
     pubDateRfc: "Mon, 20 Jan 2020 00:00:00 -0700",
     content: "(the entire HTML content of the post)",
@@ -89,15 +87,19 @@ const SCOPE = {
 };
 ```
 
+## Preprocessing and postprocessing (SASS, Typescript, etc.)
+
+This will probably never be supported. There's plenty of other, more capable and chonkier static site generators that support that kind of elaborate stuff. My use case is simple, so Wolfdog stays simple.
+
 ## Wait, why avoid dependencies?
 
 I feel like we have become too reliant on `npm install`ing stuff like Leftpad or whatever that then pulls in 2^32-1 more dependencies. Whenever vulnerabilities are discovered, or NPM randomly decides to take down some package, it creates massive unnecessary headaches for everyone.
 
-Not counting dev-dependencies, this project currently has 3 dependencies:
+Not counting dev-dependencies, this project currently has 4 direct dependencies:
 
 - [docopt](https://www.npmjs.com/package/docopt) -- for argument parsing (0 dependencies)
 - [luxon](https://www.npmjs.com/package/luxon) -- for date stuff (0 dependencies)
 - [zod](https://www.npmjs.com/package/zod) -- for type validation (0 dependencies)
 - [handlebars](https://www.npmjs.com/package/handlebars) -- for templating (5 dependencies, that all have 0 dependencies)
 
-These packages have pretty important functionality that would be a headache to implement myself, and more importantly, all except one of them have 0 dependencies of their own, minimizing potential for future NPM headaches.
+These packages implement pretty important functionality that would be a headache to implement myself, and more importantly, all except one of them have 0 dependencies of their own, minimizing the potential for future NPM headaches.

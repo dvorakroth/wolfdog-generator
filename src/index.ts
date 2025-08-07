@@ -7,6 +7,7 @@ import { z } from "zod";
 import {
   schemaPostMetadata,
   schemaSiteManifest,
+  type SiteManifest,
   type SitePost,
 } from "./types.ts";
 
@@ -67,7 +68,7 @@ async function main(): Promise<void> {
   }
 
   LOGGER.info("📝 Reading all posts");
-  const postDir = path.join(manifestDir, manifest.postInputDir);
+  const postDir = path.join(manifestDir, manifest.postSettings.postInputDir);
   const allPosts = await readAllPosts(postDir);
   if (allPosts === false) {
     process.exit(1);
@@ -82,13 +83,17 @@ async function main(): Promise<void> {
   }
 
   LOGGER.info("📝 Templating and writing all posts");
-  const postTemplateFilePath = path.join(manifestDir, manifest.postTemplate);
+  const postTemplateFilePath = path.join(
+    manifestDir,
+    manifest.postSettings.postTemplate,
+  );
   await templateAndWriteAllPosts(
     allPosts,
+    manifest.postSettings.postPubDate,
     postTemplateFilePath,
     manifest.additionalValuesInTemplateScope ?? null,
     outDir,
-    manifest.postOutputFileTemplate,
+    manifest.postSettings.postOutputFileTemplate,
   );
 
   LOGGER.info("📝 Templating and writing all other pages");
@@ -99,6 +104,7 @@ async function main(): Promise<void> {
   const additionalPagesFound = await templateAndWriteAdditionalPages(
     additionalPagesPath,
     allPosts,
+    manifest.postSettings.postPubDate,
     manifest.additionalValuesInTemplateScope,
     outDir,
   );
@@ -277,12 +283,14 @@ async function readPartialTemplates(
 
 async function formatPostForTemplateScope(
   post: SitePost,
+  pubDateFormatting: SiteManifest["postSettings"]["postPubDate"],
 ): Promise<z.core.util.JSONType> {
   return {
     slug: post.slug,
     title: post.metadata.title,
-    showPubDate: post.metadata.showPubDate !== false,
-    pubDate: post.metadata.showPubDate || null,
+    pubDate: post.metadata.pubDate.toFormat(pubDateFormatting.formatString, {
+      locale: pubDateFormatting.locale,
+    }),
     pubDateIso: post.metadata.pubDate.toISO({ includeOffset: true }),
     pubDateRfc: post.metadata.pubDate.toRFC2822(),
     content: await fs.readFile(post.pathToHtml, "utf-8"),
@@ -292,6 +300,7 @@ async function formatPostForTemplateScope(
 
 async function templateAndWriteAllPosts(
   allPosts: SitePost[],
+  pubDateFormatting: SiteManifest["postSettings"]["postPubDate"],
   postTemplateFilePath: string,
   additionalValuesInTemplateScope: z.core.util.JSONType | null,
   outDir: string,
@@ -305,7 +314,7 @@ async function templateAndWriteAllPosts(
   for (const post of allPosts) {
     try {
       const scope = {
-        post: await formatPostForTemplateScope(post),
+        post: await formatPostForTemplateScope(post, pubDateFormatting),
         additionalValues: additionalValuesInTemplateScope,
         generatorTag: GENERATOR_TAG,
       } satisfies z.core.util.JSONType;
@@ -332,6 +341,7 @@ const PATTERN_HBS_EXT = /\.hbs$/i;
 async function templateAndWriteAdditionalPages(
   additionalPagesDir: string,
   allPosts: SitePost[],
+  pubDateFormatting: SiteManifest["postSettings"]["postPubDate"],
   additionalValuesInTemplateScope: z.core.util.JSONType | undefined,
   outDir: string,
 ): Promise<boolean> {
@@ -351,7 +361,7 @@ async function templateAndWriteAdditionalPages(
   }
 
   const allPostsForScope = await Promise.all(
-    allPosts.map(formatPostForTemplateScope),
+    allPosts.map((post) => formatPostForTemplateScope(post, pubDateFormatting)),
   );
 
   // um actually, this is technically a stack!!,

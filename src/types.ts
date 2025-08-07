@@ -1,16 +1,116 @@
 import { DateTime } from "luxon";
 import { z } from "zod";
 
+const DEFAULT_POST_SETTINGS = {
+  postInputDir: "posts/",
+  postOutputFileTemplate: "posts/{{post.slug}}/index.html",
+  postTemplate: "templates/post.html.hbs",
+  postPubDate: {
+    formatString: "DDD",
+    locale: "en-US",
+  },
+} as const;
+
 export const schemaSiteManifest = z.strictObject({
+  $schema: z.string().optional(),
+
+  /** The version of Wolfdog Generator that this manifest is intended for */
   version: z.string(),
-  outputDir: z.string().default("dist"),
-  postInputDir: z.string().default("posts"),
-  postOutputFileTemplate: z.string().default("posts/{{post.slug}}/index.html"),
-  staticAssetsInputDir: z.string().default("static"),
-  postTemplate: z.string().default("templates/post.html.hbs"),
+
+  /**
+   * Directory to output the resulting baked and ready to go website to
+   * (relative to where the manifest is)
+   *
+   * @default "dist/"
+   */
+  outputDir: z.string().default("dist/"),
+
+  /**
+   * Path to directory of "static assets" (relative to where the manifest is),
+   * that will have all of its content copied verbatim into the output directory
+   *
+   * @default "static/"
+   */
+  staticAssetsInputDir: z.string().default("static/"),
+
+  /**
+   * Path to directory of Handlebars Partials (relative to where the manifest
+   * is), that will be loaded before any pages are templated.
+   *
+   *
+   * @see https://handlebarsjs.com/guide/partials.html
+   * @default "templates/partials/"
+   */
   partialTemplatesDir: z.string().default("templates/partials/"),
+
+  /**
+   * Path to directory of "additional pages" (relative to where the manifest
+   * is), that will be passed through Handlebars and output to the output
+   * directory. Subdirectory structure will be kept.
+   *
+   * @default "templates/additionalPages/"
+   */
   additionalPageTemplatesDir: z.string().default("templates/additionalPages/"),
+
+  /**
+   * Optionally, values to be passed onto every single Handlebars template, in a
+   * prop named `additionalValues`
+   */
   additionalValuesInTemplateScope: z.json().optional(),
+
+  /**
+   * Settings for post generation
+   */
+  postSettings: z
+    .strictObject({
+      /**
+       * Directory to read posts from (relative to where the manifest is)
+       *
+       * @default "posts/"
+       */
+      postInputDir: z.string().default(DEFAULT_POST_SETTINGS.postInputDir),
+
+      /**
+       * Handlebars template that, given the post's template scope, yields the
+       * output file path. (relative to the general output directory)
+       *
+       * @default "posts/{{post.slug}}/index.html"
+       */
+      postOutputFileTemplate: z
+        .string()
+        .default(DEFAULT_POST_SETTINGS.postOutputFileTemplate),
+
+      /**
+       * Path to the Handlebars template used for rendering posts (relative to
+       * where the manifest is)
+       *
+       * @default "templates/post.html.hbs"
+       */
+      postTemplate: z.string().default(DEFAULT_POST_SETTINGS.postTemplate),
+
+      /** Settings for formatting post publication dates */
+      postPubDate: z
+        .strictObject({
+          /**
+           * Luxon format string to use
+           *
+           * @see https://moment.github.io/luxon/#/formatting?id=table-of-tokens
+           * @default "DDD"
+           */
+          formatString: z
+            .string()
+            .default(DEFAULT_POST_SETTINGS.postPubDate.formatString),
+
+          /**
+           * Locale to use
+           *
+           * @default "en-US"
+           */
+          locale: z.string().default(DEFAULT_POST_SETTINGS.postPubDate.locale),
+        })
+        .default(DEFAULT_POST_SETTINGS.postPubDate),
+    })
+    .default(DEFAULT_POST_SETTINGS),
 });
 
 export type SiteManifest = z.infer<typeof schemaSiteManifest>;
@@ -21,6 +121,8 @@ const schemaValidDateTime = z.custom<DateTime<true>>(
 );
 
 export const schemaPostMetadata = z.strictObject({
+  $schema: z.string().optional(),
+
   /**
    * A mandatory title for the post
    */
@@ -39,17 +141,8 @@ export const schemaPostMetadata = z.strictObject({
     .pipe(schemaValidDateTime),
 
   /**
-   * Publication date for display purposes. Can be any string, or `false`
-   *
-   * @example "August 6th, 2025"
-   * @example false
-   * @example "Back when I lived in Sawtooth"
-   */
-  showPubDate: z.union([z.string(), z.literal(false)]),
-
-  /**
    * Optionally, values to be passed onto the Handlebars template, in a prop
-   * named `additionalValues`
+   * named `post.additionalValues`
    */
   additionalValuesInTemplateScope: z.json().optional(),
 });
