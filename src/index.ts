@@ -44,7 +44,9 @@ async function main(): Promise<void> {
     process.exit(1);
   }
 
-  // TODO add some more sanity checks: is the output directory different from any of the input directories?
+  if (!manifestSanityChecks(manifestDir, manifest)) {
+    process.exit(1);
+  }
 
   const outDir = path.join(manifestDir, manifest.outputDir);
   LOGGER.info("📂 Creating output directory: " + outDir);
@@ -144,17 +146,115 @@ const VERSION = await (async (): Promise<string> => {
 
 const GENERATOR_TAG = `Wolfdog Generator ${VERSION}`;
 
-function checkManifestVersion(manifestVersion: string): boolean {
-  // TODO do the whole semver thing; for now, there's just 1.0.0 anyway
-  if (manifestVersion !== VERSION) {
+const PATTERN_VERSION = /^(?<major>\d+)\.(?<minor>\d+)\.(?<revision>\d+)$/;
+function parseVersion(version: string): {
+  major: number;
+  minor: number;
+  revision: number;
+} {
+  const matches = version.match(PATTERN_VERSION);
+  if (!matches) {
+    throw new Error("Could not parse version number: " + version);
+  }
+
+  return {
+    major: parseInt(matches.groups!.major!),
+    minor: parseInt(matches.groups!.minor!),
+    revision: parseInt(matches.groups!.revision!),
+  };
+}
+
+function checkManifestVersion(manifestVersionStr: string): boolean {
+  const currentVersion = parseVersion(VERSION);
+  const manifestVersion = parseVersion(manifestVersionStr);
+
+  if (
+    currentVersion.major !== manifestVersion.major ||
+    currentVersion.minor < manifestVersion.minor ||
+    (currentVersion.minor === manifestVersion.minor &&
+      currentVersion.revision < manifestVersion.revision)
+  ) {
     LOGGER.error(
-      `❌ The website requires Wolfdog version ${manifestVersion},` +
+      `❌ The website requires Wolfdog version ${manifestVersionStr},` +
         ` but you're using version ${VERSION}`,
     );
     return false;
   }
 
   return true;
+}
+
+function checkIfOutsideOfProjectDir(
+  projectDir: string,
+  directoryToCheck: string,
+  nameOfDirectoryToCheck: string,
+): boolean {
+  if (!directoryToCheck.startsWith(projectDir)) {
+    LOGGER.error(
+      `❌ The ${nameOfDirectoryToCheck} (${directoryToCheck}) is outside of the project directory`,
+    );
+    return false;
+  }
+
+  return true;
+}
+
+function checkIfInsideOutputDir(
+  outputDir: string,
+  directoryToCheck: string,
+  nameOfDirectoryToCheck: string,
+): boolean {
+  if (directoryToCheck.startsWith(outputDir)) {
+    LOGGER.error(
+      `❌ The ${nameOfDirectoryToCheck} (${directoryToCheck}) is inside of the output directory`,
+    );
+    return false;
+  }
+
+  return true;
+}
+
+function manifestSanityChecks(
+  baseDir: string,
+  manifest: SiteManifest,
+): boolean {
+  let isValid = true;
+
+  const absBase = path.resolve(baseDir) + "/";
+
+  const absOut = path.resolve(absBase, manifest.outputDir);
+  isValid &&= checkIfOutsideOfProjectDir(absBase, absOut, "output directory");
+
+  const pathsToCheck: { relPath: string; name: string }[] = [
+    {
+      relPath: manifest.postSettings.postInputDir,
+      name: "post input directory",
+    },
+    {
+      relPath: manifest.postSettings.postTemplate,
+      name: "post template",
+    },
+    {
+      relPath: manifest.staticAssetsInputDir,
+      name: "static asset directory",
+    },
+    {
+      relPath: manifest.partialTemplatesDir,
+      name: "partial templates directory",
+    },
+    {
+      relPath: manifest.additionalPageTemplatesDir,
+      name: "additional page template directory",
+    },
+  ];
+
+  for (const { relPath, name } of pathsToCheck) {
+    const absPath = path.resolve(absBase, relPath);
+    isValid &&= checkIfOutsideOfProjectDir(absBase, absPath, name);
+    isValid &&= checkIfInsideOutputDir(absOut, absPath, name);
+  }
+
+  return isValid;
 }
 
 const PATTERN_JSON_FILE_EXT = /\.json$/i;
