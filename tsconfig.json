@@ -2,12 +2,15 @@
   "compilerOptions": {
     "strict": true,
     "noUncheckedIndexedAccess": true,
-    "noEmit": true,
+    "sourceMap": true,
+    "outDir": "./dist",
+    "declaration": true,
     "moduleResolution": "nodenext",
     "module": "nodenext",
     "target": "esnext",
     "verbatimModuleSyntax": true,
     "rewriteRelativeImportExtensions": true,
     "lib": ["ESNext"]
-  }
+  },
+  "include": ["src/**/*"]
 }

@@ -1,6 +1,6 @@
 {
-  "name": "wolfdog",
-  "version": "1.0.0",
+  "name": "wolfdog-generator",
+  "version": "1.0.1",
   "description": "Simple and straightforward static site generator",
   "license": "Unlicense",
   "author": "ish <ish@ish.works>",
@@ -21,14 +21,19 @@
     "url": "https://github.com/dvorakroth/wolfdog-generator/issues"
   },
   "type": "module",
-  "main": "./src/index.ts",
-  "bin": "./src/index.ts",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "bin": {
+    "wolfdog": "./dist/index.js"
+  },
   "engines": {
     "node": ">= 24.0.0"
   },
   "scripts": {
     "start": "node src/index.ts",
-    "prettier": "prettier --write 'src/**/*.ts'"
+    "prettier": "prettier --write 'src/**/*.ts'",
+    "build": "tsc",
+    "prepublish": "npm run build"
   },
   "devDependencies": {
     "@types/docopt": "^0.6.37",
