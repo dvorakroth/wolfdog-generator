@@ -1,18 +1,19 @@
 {{#> main-template.html.hbs}}
   {{#*inline "title"}}{{additionalValues.blogName}}{{/inline}}
   {{#*inline "body"}}
-    <h2>Latest posts</h2>
-    <ul class="post-list">
-      {{#allPosts}}
-        <li>
-          <a href="/posts/{{slug}}">
-            {{title}}
-          </a>
-          {{#showPubDate}}
-            — {{pubDate}}
-          {{/showPubDate}}
-        </li>
-      {{/allPosts}}
-    </ul>
+<a href="/about">About Me</a>
+<h2>Latest posts</h2>
+<ul class="post-list">
+  {{#allPosts}}
+    <li>
+      <a href="/posts/{{slug}}">
+        {{title}}
+      </a>
+      {{#showPubDate}}
+        — {{pubDate}}
+      {{/showPubDate}}
+    </li>
+  {{/allPosts}}
+</ul>
   {{/inline}}
 {{/main-template.html.hbs}}

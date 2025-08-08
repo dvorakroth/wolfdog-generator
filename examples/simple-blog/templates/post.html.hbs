@@ -1,14 +1,14 @@
 {{#> main-template.html.hbs}}
   {{#*inline "title"}}{{post.title}} - {{additionalValues.blogName}}{{/inline}}
   {{#*inline "body"}}
-    <a href="/">&lt; Back to main page</a>
-    <article>
-      <hgroup>
-        <h2>{{post.title}}</h2>
-        <div class="date">{{post.pubDate}}</div>
-      </hgroup>
+<a href="/">&lt; Back to main page</a>
+<article>
+  <hgroup>
+    <h2>{{post.title}}</h2>
+    <div class="date">{{post.pubDate}}</div>
+  </hgroup>
 
-      {{> post-content.html.hbs post.content}}
-    </article>
+  {{> utils/identity.hbs post.content}}
+</article>
   {{/inline}}
 {{/main-template.html.hbs}}
