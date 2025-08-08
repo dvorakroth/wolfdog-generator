@@ -1,6 +1,6 @@
 # wolfdog-generator
 
-Simple static site generator, with as few dependencies as I could realistically manage without going insane. Uses Handlebars for templating, and good ol' raw HTML for page content.
+Simple and straightforward static site generator, with as few dependencies as I could realistically manage without going insane. Uses Handlebars for templating, and good ol' raw HTML for page content.
 
 ## How to Use
 
