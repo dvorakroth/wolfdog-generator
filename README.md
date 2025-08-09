@@ -1,5 +1,7 @@
 # wolfdog-generator
 
+[![npm](https://img.shields.io/npm/v/wolfdog-generator)](https://npmjs.com/wolfdog-generator)
+ 
 Simple and straightforward static site generator, with as few dependencies as I could realistically manage without going insane. Uses Handlebars for templating, and good ol' raw HTML for page content.
 
 ## How to Use
@@ -26,7 +28,7 @@ my-cool-site/
 Then run:
 
 ```bash
-npm install --save-dev wolfdog
+npm install --save-dev wolfdog-generator
 npx wolfdog build
 ```
 
